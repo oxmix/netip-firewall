@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -e
+
+NAME='netip-firewall'
+VERSION='1'
+HUB='oxmix'
+
+case $1 in
+  dev)
+    docker build -t $HUB/$NAME:$VERSION .
+    docker-compose --project-directory ../netip-api/dev up -d firewall
+    ;;
+
+  push)
+    ! docker buildx rm $NAME-builder
+    docker buildx create --name $NAME-builder --use
+    docker buildx build --tag $HUB/$NAME:$VERSION --tag $HUB/$NAME:latest --push \
+                        --platform linux/amd64,linux/arm64 .
+    docker buildx rm $NAME-builder
+    docker buildx prune -f
+    ;;
+
+  *)
+    echo "./build dev|push"
+    ;;
+esac
