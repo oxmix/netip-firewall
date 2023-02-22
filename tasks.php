@@ -87,7 +87,7 @@ class Tasks {
 				var_dump($result);
 				echo '---'.PHP_EOL;
 
-				if (!$result['ok'] && $result['httpCode'] >= 500 && $this->iteration === 1) {
+				if (($result['httpCode'] ?? 0) >= 500 && $this->iteration === 1) {
 					exit('- iteration: 1 and response code: '.$result['httpCode'].' -> now restart'.PHP_EOL);
 				}
 			}
